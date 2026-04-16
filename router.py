@@ -63,13 +63,12 @@ class ModelSelection:
 
 
 
-        def selct_model(self, message):
+    def selct_model(self, message):
             if not message:
-                print("can't send empty response")
-                return
-            if message.split() in list(self.detaling):
+                return None
+            if message.lower().split() in list(self.detaling):
                 return self.model["detail"]
-            if message.split() in list(self.coding):
+            if message.lower().split() in list(self.coding):
                 return self.model["code"]
 
             else:
