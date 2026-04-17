@@ -3,6 +3,8 @@ class ModelSelection:
 
     def __init__(self):
 
+        self.content = None
+
         self.model = {
             "small" : {
                 "model": "openai/gpt-oss-20b:free",
@@ -13,7 +15,7 @@ class ModelSelection:
                     },
                     {
                         "role" : "user",
-                        "content" : self.message
+                        "content" : self.content
                     }
 
                 ],
@@ -29,7 +31,7 @@ class ModelSelection:
                     },
                     {
                         "role" : "user",
-                        "content" :  self.message
+                        "content" :  self.content
                     }
 
                 ],
@@ -48,7 +50,7 @@ class ModelSelection:
                     },
                     {
                         "role" : "user",
-                        "content" : self.message
+                        "content" : self.content
                     }
 
                 ],
@@ -66,6 +68,7 @@ class ModelSelection:
     def selct_model(self, message):
             if not message:
                 return None
+            self.content = message
             if message.lower().split() in list(self.detaling):
                 return self.model["detail"]
             if message.lower().split() in list(self.coding):
