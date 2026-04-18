@@ -8,7 +8,7 @@ class ModelSelection:
         self.model = {
             "small" : {
                 "model": "openai/gpt-oss-20b:free",
-                "messeges" : [
+                "messages" : [
                     {
                         "role" : "system",
                         "content" : Config.system_promt.get("concise")
@@ -19,12 +19,12 @@ class ModelSelection:
                     }
 
                 ],
-                "temprature" : Config.temprature.get("concise", 0.7)
+                "temperature" : Config.temprature.get("concise", 0.7)
             },
 
             "code" : {
                 "model" : "openai/gpt-oss-120b:free",
-                "messeges" : [
+                "messages" : [
                     {
                         "role" : "system",
                         "content" : Config.system_promt.get("very_concise")
@@ -35,7 +35,7 @@ class ModelSelection:
                     }
 
                 ],
-                "temprature" : Config.temprature.get("very_concise", 0.2)
+                "temperature" : Config.temprature.get("very_concise", 0.2)
 
 
             },
@@ -43,7 +43,7 @@ class ModelSelection:
             "detail" : {
 
                 "model" : "openai/gpt-oss-120b:free",
-                "messeges" : [
+                "messages" : [
                     {
                         "role" : "system",
                         "content" : Config.system_promt.get("detail", "Elaborate")
@@ -54,7 +54,7 @@ class ModelSelection:
                     }
 
                 ],
-                "temprature" : Config.temprature.get("detail", 0.7)
+                "temperature" : Config.temprature.get("detail", 0.7)
 
             }
 
