@@ -17,6 +17,8 @@ errors = {
 
 def send_response(data: dict, errors = errors):
 
+#     return data
+
     if not data:
         return "can't give answer to empty message"
 
@@ -25,15 +27,27 @@ def send_response(data: dict, errors = errors):
 
     url = "https://openrouter.ai/api/v1/chat/completions"
 
-    header = {
-        "Autharization" : f"Bearer {openai_api}",
-        "Content_Type" : "application/json"
-    }
+    headers = {
+    "Authorization": f"Bearer {openai_api}",
+    "Content-Type": "application/json"
+}
 
-    response = requests.post(url, headers=header, json=data)
+    response = requests.post(url, headers=headers, json=data)
 
-    if response.status_code in errors:
+    try:
+        result = response.json()
+    except Exception as e:
+        return f"json error:", {e}
+
+    if response.status_code != 200 and response.json().get("error"):
         logger.critical(f"server response: {response.status_code} {errors.get(response.status_code)}")
         return errors.get(response.status_code)
 
-    return response["choices"][0]["message"]["content"]
+    if "choices" not in result:
+        return f"unexpected response: {result}"
+
+    return result["choices"][0]["message"]["content"]
+
+
+
+
