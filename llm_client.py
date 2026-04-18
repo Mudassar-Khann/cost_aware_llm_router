@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
 import os
 import requests
+import logging
 
-
-
+logger = logging.getLogger("API responded with")
 
 
 errors = {
@@ -33,6 +33,7 @@ def send_response(data: dict, errors = errors):
     response = requests.post(url, headers=header, json=data)
 
     if response.status_code in errors:
+        logger.critical(f"server response: {response.status_code} {errors.get(response.status_code)}")
         return errors.get(response.status_code)
 
     return response["choices"][0]["message"]["content"]
