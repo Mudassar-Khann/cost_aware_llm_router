@@ -1,91 +1,41 @@
-from config import Config
 class ModelSelection:
 
     def __init__(self):
+        self.detaling = {"detail", "elaborate", "explain", "examples"}
+        self.coding = {"cpp", "c++", "python", "code", "coding", "java"}
 
-        self.content = None
+    def build_model(self, model_type, content):
+        return {
+            "model": {
+                "small": "openai/gpt-oss-20b:free",
+                "code": "openai/gpt-oss-120b:free",
+                "detail": "openai/gpt-oss-120b:free"
+            }[model_type],
 
-        self.model = {
-            "small" : {
-                "model": "openai/gpt-oss-20b:free",
-                "messages" : [
-                    {
-                        "role" : "system",
-                        "content" : Config.system_promt.get("concise")
-                    },
-                    {
-                        "role" : "user",
-                        "content" : self.content
-                    }
+            "messages": [
+                {
+                    "role": "system",
+                    "content": Config.system_promt.get(model_type, "Default")
+                },
+                {
+                    "role": "user",
+                    "content": content   # ✅ always fresh
+                }
+            ],
 
-                ],
-                "temperature" : Config.temprature.get("concise", 0.7)
-            },
-
-            "code" : {
-                "model" : "openai/gpt-oss-120b:free",
-                "messages" : [
-                    {
-                        "role" : "system",
-                        "content" : Config.system_promt.get("very_concise")
-                    },
-                    {
-                        "role" : "user",
-                        "content" :  self.content
-                    }
-
-                ],
-                "temperature" : Config.temprature.get("very_concise", 0.2)
-
-
-            },
-
-            "detail" : {
-
-                "model" : "openai/gpt-oss-120b:free",
-                "messages" : [
-                    {
-                        "role" : "system",
-                        "content" : Config.system_promt.get("detail", "Elaborate")
-                    },
-                    {
-                        "role" : "user",
-                        "content" : self.content
-                    }
-
-                ],
-                "temperature" : Config.temprature.get("detail", 0.7)
-
-            }
-
+            "temperature": Config.temprature.get(model_type, 0.7)
         }
 
-        self.detaling = {"detail", "elaborate", "explain", "examples" }
-        self.coding = {"cpp", "c++", "python", "code", "coding", "java" }
+    def select_model(self, message):
+        if not message:
+            return None
 
+        words = set(message.lower().split())
 
+        if words & self.detaling:
+            return self.build_model("detail", message)
 
-    def selct_model(self, message):
-            if not message:
-                return None
-            self.content = message
-            return self.model["detail"]["messages"][1]["content"]
-            message = set(message.lower().split())
-            if message & self.detaling:
-                return self.model["detail"]
-            if message & self.coding:
-                return self.model["code"]
+        if words & self.coding:
+            return self.build_model("code", message)
 
-            else:
-                return self.model["small"]
-
-
-
-
-
-
-
-
-
-
-
+        return self.build_model("small", message)
