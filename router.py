@@ -69,9 +69,11 @@ class ModelSelection:
             if not message:
                 return None
             self.content = message
-            if message.lower().split() in list(self.detaling):
+            return self.model["detail"]["messages"][1]["content"]
+            message = set(message.lower().split())
+            if message & self.detaling:
                 return self.model["detail"]
-            if message.lower().split() in list(self.coding):
+            if message & self.coding:
                 return self.model["code"]
 
             else:
