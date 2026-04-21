@@ -1,8 +1,9 @@
+from config import Config
 class ModelSelection:
 
     def __init__(self):
-        self.detaling = {"detail", "elaborate", "explain", "examples"}
-        self.coding = {"cpp", "c++", "python", "code", "coding", "java"}
+        self.Expensive_Model = {"detail", "elaborate", "explain", "examples", "story", "why", "how", "compare", "design"}
+        self.Coding_Model = {"cpp", "c++", "python", "code", "coding", "java"}
 
     def build_model(self, model_type, content):
         return {
@@ -19,7 +20,7 @@ class ModelSelection:
                 },
                 {
                     "role": "user",
-                    "content": content   # ✅ always fresh
+                    "content": content
                 }
             ],
 
@@ -32,10 +33,13 @@ class ModelSelection:
 
         words = set(message.lower().split())
 
-        if words & self.detaling:
+        if "why" in words and len(words) <= 6:
+            return self.select_model("small", message)
+
+        if words & self.Expensive_Model or len(words) >= 20:
             return self.build_model("detail", message)
 
-        if words & self.coding:
+        if words & self.Coding_Model:
             return self.build_model("code", message)
 
         return self.build_model("small", message)
