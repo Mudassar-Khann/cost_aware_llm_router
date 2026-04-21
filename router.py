@@ -34,7 +34,7 @@ class ModelSelection:
         words = set(message.lower().split())
 
         if "why" in words and len(words) <= 6:
-            return self.select_model("small", message)
+            return self.build_model("small", message)
 
         if words & self.Expensive_Model or len(words) >= 20:
             return self.build_model("detail", message)
