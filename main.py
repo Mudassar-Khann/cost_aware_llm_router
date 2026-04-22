@@ -5,23 +5,19 @@ import time
 ms = ModelSelection()
 
 
-print("> Enter your 'query' for model response or type 'exist' to leave the sesstion: ")
+print("> Enter your 'query' for model response or type 'exist' to leave the session: ")
 while True:
     query = input(">").strip()
-    star_time = time.perf_counter()
+
 
     if query == "exit":
-        print("Ending sesstion..")
+        print("Ending session..")
         break
-    user_query = ms.selct_model(query)
+    user_query = ms.select_model(query)
     response = llm_client.send_response(user_query)
-    end_time = time.perf_counter()
 
-    if "takin too long" in response or "unavlible" in response:
-        print("Server is busy retry after some time ")
-        break
-
-    print(f"Model : {response}")
+    print(f"Model : {response["choices"][0]["message"]["content"]}")
+    print(f"[Tokens] : input={response["usage"].get("prompt_tokens", "info not avalibal")}  output={response["usage"].get("completion_tokens", "info not avalibal")}, total={response["usage"].get("total_tokens", "info not avalibal")}")
 
 
 
