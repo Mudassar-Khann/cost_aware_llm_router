@@ -6,6 +6,9 @@ class ModelSelection:
         self.Coding_Model = {"cpp", "c++", "python", "code", "coding", "java"}
 
     def build_model(self, model_type, content):
+        with open("docs.txt", "r", encoding="utf-8") as f:
+           Docs = f.read()
+
         return {
             "model": {
                 "small": "openai/gpt-oss-20b:free",
@@ -20,8 +23,14 @@ class ModelSelection:
                 },
                 {
                     "role": "user",
+                    "content" : Docs
+                },
+                {
+                    "role": "user",
                     "content": content
                 }
+
+
             ],
 
             "temperature": Config.temprature.get(model_type, 0.7)
