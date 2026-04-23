@@ -24,7 +24,7 @@ class ModelSelection:
                 {
                     "role": "user",
                     "content" : Docs
-                },
+                }if model_type == "detail" else None,
                 {
                     "role": "user",
                     "content": content
