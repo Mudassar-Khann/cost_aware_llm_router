@@ -9,5 +9,5 @@ logging.basicConfig(
     level=logging.INFO,
     filemode="a",
     encoding="utf-8",
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - [%(levelname)s] - [%(name)s]- %(message)s"
 )
