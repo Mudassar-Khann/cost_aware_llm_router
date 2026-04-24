@@ -25,8 +25,19 @@ class Config:
         "detail"  : 0.7
     }
 
-    cost_of_models = {
-        "cheap" :
+    Models_Token_Pricing  = {
+
+    "openai/gpt-oss-20b:free" : {
+        "cost_per_1m_input" : 3,
+        "cost_per_1m_output" : 15
+    },
+    "openai/gpt-oss-120b:free" : {
+        "cost_per_1m_input" : 5,
+        "cost_per_1m_output" : 25
     }
 
+
+    }
+
+    
 
