@@ -1,8 +1,10 @@
 from router import ModelSelection
 from config import Config
+from cost_tracker import CostTracker
 import llm_client
 
 ms = ModelSelection()
+cost_tracker = CostTracker()
 
 
 print("> Enter your 'query' for model response or type 'exist' to leave the session: ")
@@ -19,11 +21,14 @@ while True:
     model = response.get("model")
     input_tokens = response["usage"].get("prompt_tokens", 0)
     output_tokens = response["usage"].get("completion_tokens", 0 )
+    total_tokens = response["usage"].get("total_tokens", 0 )
 
     input_price = Config.Models_Token_Pricing[model].get("cost_per_1m_input", 0)
     output_price = Config.Models_Token_Pricing[model].get("cost_per_1m_output", 0)
 
     cost = ((input_price / 1000000) * input_tokens) + ((output_price / 1000000) * output_tokens)
+
+    cost_tracker.cost_calculator(total_tokens, cost)
 
     print(f"[Model] : {model}")
     print(f"[Model Response] : {response["choices"][0]["message"]["content"]} \n")
