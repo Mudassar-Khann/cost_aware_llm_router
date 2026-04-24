@@ -5,7 +5,7 @@ class ModelSelection:
         self.Expensive_Model = {"detail", "elaborate", "explain", "examples", "story", "why", "how", "compare", "design"}
         self.Coding_Model = {"cpp", "c++", "python", "code", "coding", "java"}
 
-    def build_model(self, model_type, content):
+    def build_model(self, model_type, content, mode):
         with open("docs.txt", "r", encoding="utf-8") as f:
            Docs = f.read()
 
@@ -19,12 +19,21 @@ class ModelSelection:
             "messages": [
                 {
                     "role": "system",
+                    "contnet" : {
+
+                              "text" : "Provide structured text reasponse. Avoide conjuction give gaps and highlits for importnat points",
+                              "json" : "Always respond in JSON with keys: answer, confidence",
+                              "code" : "Provide effcinet code chunks if asked for full provide large snippets"
+                                 }[mode]
+                },
+                {
+                    "role": "system",
                     "content": Config.system_promt.get(model_type, "Default")
                 },
                 {
                     "role": "user",
                     "content" : Docs
-                }if model_type == "detail" else None,
+                },
                 {
                     "role": "user",
                     "content": content
@@ -36,19 +45,19 @@ class ModelSelection:
             "temperature": Config.temprature.get(model_type, 0.7)
         }
 
-    def select_model(self, message):
+    def select_model(self, message, mode = "text"):
         if not message:
             return None
 
         words = set(message.lower().split())
 
         if "why" in words and len(words) <= 6:
-            return self.build_model("small", message)
+            return self.build_model("small", message, mode)
 
         if words & self.Expensive_Model or len(words) >= 20:
-            return self.build_model("detail", message)
+            return self.build_model("detail", message, mode)
 
         if words & self.Coding_Model:
-            return self.build_model("code", message)
+            return self.build_model("code", message, mode)
 
-        return self.build_model("small", message)
+        return self.build_model("small", message, mode)
