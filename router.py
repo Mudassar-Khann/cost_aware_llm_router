@@ -2,12 +2,15 @@ from config import Config
 class ModelSelection:
 
     def __init__(self):
-        self.Expensive_Model = {"detail", "elaborate", "explain", "examples", "story", "why", "how", "compare", "design"}
-        self.Coding_Model = {"cpp", "c++", "python", "code", "coding", "java"}
+
+        with open("docs.txt", "r", encoding="utf-8") as f:
+         self._docs = f.read()
+
+        self.expensive_model = {"detail", "elaborate", "explain", "examples", "story", "why", "how", "compare", "design"}
+        self.coding_model = {"cpp", "c++", "python", "code", "coding", "java"}
 
     def build_model(self, model_type, content, mode):
-        with open("docs.txt", "r", encoding="utf-8") as f:
-           Docs = f.read()
+
 
         return {
             "model": {
@@ -19,7 +22,7 @@ class ModelSelection:
             "messages": [
                 {
                     "role": "system",
-                    "contnet" : {
+                    "content" : {
 
                               "text" : "Provide structured text reasponse. Avoide conjuction give gaps and highlits for importnat points",
                               "json" : "Always respond in JSON with keys: answer, confidence",
