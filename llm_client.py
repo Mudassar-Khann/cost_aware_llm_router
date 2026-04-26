@@ -1,11 +1,11 @@
 from dotenv import load_dotenv
 import os
 import requests
-import logger
+import logging
 import logging
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 errors = {
@@ -50,7 +50,7 @@ def send_response(data: dict, errors = errors):
         return f"json error:", {e}
 
     if response.status_code in errors or response.status_code != 200:
-        logger.error(f"server response: {response.status_code} {errors.get(response.status_code)}")
+        logging.error(f"server response: {response.status_code} {errors.get(response.status_code)}")
         return errors.get(response.status_code)
 
     if "choices" not in result:
