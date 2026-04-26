@@ -1,65 +1,29 @@
 from config import Config
-class ModelSelection:
+from utils import contains_keywords
 
+class Router:
     def __init__(self):
+        self.complex_keywords = {
+            "explain", "why", "how", "compare", "design"
+        }
 
-        with open("docs.txt", "r", encoding="utf-8") as f:
-         self._docs = f.read()
+    def route(self, text: str):
+        words = set(text.lower().split())
 
-        self.expensive_model = {"detail", "elaborate", "explain", "examples", "story", "why", "how", "compare", "design"}
-        self.coding_model = {"cpp", "c++", "python", "code", "coding", "java"}
+        if contains_keywords(words, self.complex_keywords):
+            return {
+                "model": Config.EXPENSIVE_MODEL,
+                "reason": "keyword_complex"
+            }
 
-    def build_model(self, model_type, content, mode):
+        if len(words) > 20:
+            return {
+                "model": Config.EXPENSIVE_MODEL,
+                "reason": "long_query"
+            }
 
 
         return {
-            "model": {
-                "small": "openai/gpt-oss-20b:free",
-                "code": "openai/gpt-oss-120b:free",
-                "detail": "openai/gpt-oss-120b:free"
-            }[model_type],
-
-            "messages": [
-                {
-                    "role": "system",
-                    "content" : {
-
-                              "text" : "Provide structured text reasponse. Avoide conjuction give gaps and highlits for importnat points",
-                              "json" : "Always respond in JSON with keys: answer, confidence",
-                              "code" : "Provide effcinet code chunks if asked for full provide large snippets"
-                                 }[mode]
-                },
-                {
-                    "role": "system",
-                    "content": Config.system_promt.get(model_type, "Default")
-                },
-                {
-                    "role": "user",
-                    "content" : Docs
-                },
-                {
-                    "role": "user",
-                    "content": content
-                }
-
-
-            ],
-
-            "temperature": Config.temprature.get(model_type, 0.7)
+            "model": Config.CHEAP_MODEL,
+            "reason": "default_simple"
         }
-
-    def select_model(self, message, mode = "text"):
-        if not message:
-            return None
-
-        words = set(message.lower().split())
-
-       
-
-        if words & self.Expensive_Model or len(words) >= 20:
-            return self.build_model("detail", message, mode)
-
-        if words & self.Coding_Model:
-            return self.build_model("code", message, mode)
-
-        return self.build_model("small", message, mode)

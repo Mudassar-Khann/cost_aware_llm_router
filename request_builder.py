@@ -2,10 +2,7 @@ from config import Config
 
 class RequestBuilder:
     def build(self, user_input, model, mode="text"):
-        """
-        This ONLY builds request payload.
-        No API calls here.
-        """
+       
 
         system_prompt = Config.SYSTEM_PROMPT
 
