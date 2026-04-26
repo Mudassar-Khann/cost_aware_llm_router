@@ -4,6 +4,7 @@ import requests
 import logging
 import logging
 
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ def send_response(data: dict, errors = errors):
     if not data:
         return "can't give answer to empty message"
 
-    load_dotenv()
+
     openai_api = os.getenv("OPENAI_API_KEY")
 
     url = "https://openrouter.ai/api/v1/chat/completions"
@@ -47,7 +48,7 @@ def send_response(data: dict, errors = errors):
     except requests.Timeout as e:
         return f"request taking too long: {e}"
     except Exception as e:
-        return f"json error:", {e}
+        return f"json error: {e}"
 
     if response.status_code in errors or response.status_code != 200:
         logging.error(f"server response: {response.status_code} {errors.get(response.status_code)}")
