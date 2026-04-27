@@ -1,44 +1,76 @@
-from router import ModelSelection
-from config import Config
+from router import Router
+from request_builder import RequestBuilder
+from llm_client import LLMClient
 from cost_tracker import CostTracker
-import llm_client
-import logging
+from logger import get_logger
 
-ms = ModelSelection()
-cost_tracker = CostTracker()
+logger = get_logger()
 
-mode = "text"
-print("> Enter your 'query' for model response or type 'exist' to leave the session: ")
-while True:
-    query = input(">").strip()
+router = Router()
+builder = RequestBuilder()
+client = LLMClient()
+tracker = CostTracker()
+
+def main():
+    print("App initialized. Type 'exit' to quit.\n")
+
+    while True:
+        user_input = input("> ").strip()
+
+        if user_input.lower() == "exit":
+            print("Ending session.")
+            break
+
+        # STEP 1: Route decision
+        route = router.route(user_input)
+
+        # STEP 2: Build request
+        payload = builder.build(
+            user_input=user_input,
+            model=route["model"],
+            mode="text"
+        )
+
+        # STEP 3: Send request
+        result = client.send(payload)
+
+        if not result["success"]:
+            print(f"[ERROR] {result['error']}")
+            logger.error(result["error"])
+            continue
+
+        data = result["data"]
+
+        # STEP 4: Extract safely
+        try:
+            response_text = data["choices"][0]["message"]["content"]
+            usage = data["usage"]
+        except Exception:
+            print("[ERROR] Unexpected response format")
+            continue
+
+        # STEP 5: Cost calculation
+        cost_info = tracker.update(
+            model=route["model"],
+            usage=usage
+        )
+
+        # STEP 6: Logging
+        logger.info(
+            f"model={route['model']} "
+            f"reason={route['reason']} "
+            f"tokens={usage} "
+            f"cost={cost_info['cost']:.6f}"
+        )
+
+        # STEP 7: Output
+        print(f"\n[MODEL] {route['model']}")
+        print(f"[REASON] {route['reason']}")
+        print(f"[RESPONSE]\n{response_text}\n")
+        print(f"[TOKENS] {usage}")
+        print(f"[COST] ${cost_info['cost']:.6f}")
+        print(f"[TOTAL COST] ${cost_info['total_cost']:.6f}\n")
 
 
-    if query == "exit":
-        print("Ending session..")
-        break
-    user_query = ms.select_model(query)
-    response = llm_client.send_response(user_query)
-
-
-    model = response.get("model")
-    input_tokens = response["usage"].get("prompt_tokens", 0)
-    output_tokens = response["usage"].get("completion_tokens", 0 )
-    total_tokens = response["usage"].get("total_tokens", 0 )
-
-    input_price = Config.Models_Token_Pricing[model].get("cost_per_1m_input", 0)
-    output_price = Config.Models_Token_Pricing[model].get("cost_per_1m_output", 0)
-
-    cost = ((input_price / 1000000) * input_tokens) + ((output_price / 1000000) * output_tokens)
-
-    cost_tracker.cost_calculator(total_tokens, cost)
-    logging.info(f"model={model} input_tokens={input_tokens} output_tokens={output_tokens} cost={cost:.4f}")
-
-    print(f"[Model] : {model}")
-    print(f"[Model Response] : {response["choices"][0]["message"]["content"]} \n")
-    print(f"[Tokens] : input={response["usage"].get("prompt_tokens", "info not avalibal")}  output={response["usage"].get("completion_tokens", "info not avalibal")}, total={response["usage"].get("total_tokens", "info not avalibal")}")
-    print(f"[Cost] : {cost:.4f}$")
-
-
-
-
-
+if __name__ == "__main__":
+    main()
