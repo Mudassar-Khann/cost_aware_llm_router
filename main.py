@@ -21,7 +21,7 @@ def main():
             print("Ending session.")
             break
 
-        # STEP 1: Route decision
+
         route = router.route(user_input)
 
         # STEP 2: Build request
@@ -31,7 +31,6 @@ def main():
             mode="text"
         )
 
-        # STEP 3: Send request
         result = client.send(payload)
 
         if not result["success"]:
@@ -41,7 +40,7 @@ def main():
 
         data = result["data"]
 
-        # STEP 4: Extract safely
+
         try:
             response_text = data["choices"][0]["message"]["content"]
             usage = data["usage"]
@@ -49,13 +48,12 @@ def main():
             print("[ERROR] Unexpected response format")
             continue
 
-        # STEP 5: Cost calculation
+
         cost_info = tracker.update(
             model=route["model"],
             usage=usage
         )
 
-        # STEP 6: Logging
         logger.info(
             f"model={route['model']} "
             f"reason={route['reason']} "
@@ -63,7 +61,7 @@ def main():
             f"cost={cost_info['cost']:.6f}"
         )
 
-        # STEP 7: Output
+     
         print(f"\n[MODEL] {route['model']}")
         print(f"[REASON] {route['reason']}")
         print(f"[RESPONSE]\n{response_text}\n")
