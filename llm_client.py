@@ -4,20 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class LLMClient:
     def __init__(self):
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.url = "https://openrouter.ai/api/v1/chat/completions"
 
     def send(self, payload):
-        """
-        ALWAYS returns:
-        {
-            "success": bool,
-            "data": dict | None,
-            "error": str | None
-        }
-        """
+
 
         try:
             response = requests.post(

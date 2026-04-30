@@ -24,7 +24,7 @@ def main():
 
         route = router.route(user_input)
 
-        # STEP 2: Build request
+       
         payload = builder.build(
             user_input=user_input,
             model=route["model"],
@@ -61,7 +61,7 @@ def main():
             f"cost={cost_info['cost']:.6f}"
         )
 
-     
+
         print(f"\n[MODEL] {route['model']}")
         print(f"[REASON] {route['reason']}")
         print(f"[RESPONSE]\n{response_text}\n")
