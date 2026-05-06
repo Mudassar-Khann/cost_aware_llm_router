@@ -25,6 +25,7 @@ class LLMClient:
                 timeout=15
             )
 
+
             if not response.ok:
                 return {
                     "success": False,
