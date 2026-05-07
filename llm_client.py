@@ -1,14 +1,14 @@
 import requests
-from openai import OpenAI
+from config import Settings
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+
+settings = Settings()
 
 
 class LLMClient:
     def __init__(self):
-        self.api_key = os.getenv("OPENROUTER_API_KEY")
+        self.api_key = settings.openrouter_api_key
         self.url = "https://openrouter.ai/api/v1/chat/completions"
 
     def send(self, payload):
