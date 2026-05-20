@@ -1,7 +1,7 @@
 import requests
 from config import Settings
 import os
-
+from openai import OpenAI
 
 settings = Settings()
 
@@ -15,7 +15,7 @@ class LLMClient:
 
 
         try:
-            response = requests.post(
+            response = OpenAI.completions(
                 self.url,
                 headers={
                     "Authorization": f"Bearer {self.api_key}",
