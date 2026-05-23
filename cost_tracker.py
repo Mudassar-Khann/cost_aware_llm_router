@@ -6,8 +6,8 @@ class CostTracker:
         self.total_tokens = 0
 
     def update(self, model, usage):
-        input_tokens = usage.get("prompt_tokens", 0)
-        output_tokens = usage.get("completion_tokens", 0)
+        input_tokens = usage.prompt_tokens
+        output_tokens = usage.completion_tokens
 
         pricing = Config.PRICING[model]
 
