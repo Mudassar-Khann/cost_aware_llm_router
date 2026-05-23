@@ -24,7 +24,7 @@ def main():
 
         route = router.route(user_input)
 
-       
+
         payload = builder.build(
             user_input=user_input,
             model=route["model"],
@@ -42,8 +42,8 @@ def main():
 
 
         try:
-            response_text = data["choices"][0]["message"]["content"]
-            usage = data["usage"]
+            response_text = data["choices"][0].message.content
+            usage = data.usage
         except Exception:
             print("[ERROR] Unexpected response format")
             continue
