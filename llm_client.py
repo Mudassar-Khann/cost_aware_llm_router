@@ -17,10 +17,10 @@ class LLMClient:
 
         try:
             response = self.Client.chat.completions.create(
-                model= payload["model"]
+                model= payload["model"],
                 messages= payload["messages"],
-                temperature= payload["temprature"]
-                stream= True
+                temperature= payload["temprature"],
+                stream= True,
                 timeout=15
 
             )
