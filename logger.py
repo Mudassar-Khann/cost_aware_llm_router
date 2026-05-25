@@ -20,6 +20,7 @@ def get_logger() -> logging.Logger:
     )
 
 
+
     file_handler = logging.FileHandler(
         "logs/app.log",
         encoding="utf-8"
