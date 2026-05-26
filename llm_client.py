@@ -20,7 +20,7 @@ class LLMClient:
                 model= payload["model"],
                 messages= payload["messages"],
                 temperature= payload["temperature"],
-                stream= True,
+   
                 timeout=15
 
             )
