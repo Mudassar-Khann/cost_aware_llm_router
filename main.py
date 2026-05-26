@@ -66,7 +66,7 @@ def main():
 
 
         print(f"\n[MODEL] {route['model']}")
-        print(f"\n[MODEL] {route['model']}")
+        print(f"{content}")
         print(f"[REASON] {route['reason']}")
         print(f"[TOKENS] {usage}")
         print(f"[COST] ${cost_info['cost']:.6f}")
