@@ -38,20 +38,29 @@ def main():
             logger.error(result["error"])
             continue
 
-        data = result["data"]
+        stream = result["data"]
+        usage = stream.usage
 
 
         try:
-            response_text = data["choices"][0].message.content
-            usage = data.usage
-        except Exception:
-            print("[ERROR] Unexpected response format")
-            continue
+
+            for chunk in  stream:
+
+                contnet = chunk.choices[0].delta.content
+
+                if contnet:
+
+                    print(contnet, end="")
+
+
+        finally:
+            stream.close()
+
 
 
         cost_info = tracker.update(
             model=route["model"],
-            usage=usage
+            usage= usage
         )
 
         logger.info(
@@ -64,7 +73,6 @@ def main():
 
         print(f"\n[MODEL] {route['model']}")
         print(f"[REASON] {route['reason']}")
-        print(f"[RESPONSE]\n{response_text}\n")
         print(f"[TOKENS] {usage}")
         print(f"[COST] ${cost_info['cost']:.6f}")
         print(f"[TOTAL COST] ${cost_info['total_cost']:.6f}\n")
