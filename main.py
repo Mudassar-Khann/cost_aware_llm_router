@@ -38,23 +38,17 @@ def main():
             logger.error(result["error"])
             continue
 
-        stream = result["data"]
-        usage = stream.usage
+        data = result["data"]
+        usage = data.usage
 
 
-        try:
-
-            for chunk in  stream:
-
-                contnet = chunk.choices[0].delta.content
-
-                if contnet:
-
-                    print(contnet, end="")
+        content = data.choices[0].message.content
 
 
-        finally:
-            stream.close()
+
+
+
+
 
 
 
@@ -71,6 +65,7 @@ def main():
         )
 
 
+        print(f"\n[MODEL] {route['model']}")
         print(f"\n[MODEL] {route['model']}")
         print(f"[REASON] {route['reason']}")
         print(f"[TOKENS] {usage}")
