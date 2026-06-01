@@ -7,7 +7,7 @@ class LLMError(Exception):
             raw_response: str = None
             ):
 
-        super.__init__(message)
+        super().__init__(message)
         self.provider = provider
         self.model = model
         self.raw_response = raw_response
@@ -26,10 +26,6 @@ class InvalidRequestError(LLMError):
 
 
 class ModelNotFoundError(LLMError):
-    pass
-
-
-class APIConnectionError(LLMError):
     pass
 
 
