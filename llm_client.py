@@ -12,7 +12,7 @@ class LLMClient:
             base_url= "https://openrouter.ai/api/v1"
         )
 
-
+    
     def send(self, payload):
 
         try:
@@ -20,7 +20,7 @@ class LLMClient:
                 model= payload["model"],
                 messages= payload["messages"],
                 temperature= payload["temperature"],
-   
+
                 timeout=15
 
             )
