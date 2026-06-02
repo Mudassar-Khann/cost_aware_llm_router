@@ -32,7 +32,7 @@ class ModelNotFoundError(LLMError):
 class ProviderError(LLMError):
     pass
 
-class TimeOutError(LLMError):
+class TimeoutError(LLMError):
     pass
 
 class NetworkError(LLMError):
