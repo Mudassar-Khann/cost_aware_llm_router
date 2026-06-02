@@ -1,7 +1,7 @@
 from config import Settings
 from openai import OpenAI
 from errors import (LLMError, RateLimitError, InvalidRequestError,
- NetworkError, TimeOutError, AuthenticationError, ModelNotFoundError, ProviderError)
+ NetworkError, TimeoutError, AuthenticationError, ModelNotFoundError, ProviderError)
 
 settings = Settings()
 
@@ -64,11 +64,11 @@ class LLMClient:
                 "data": None,
                 "error": ModelNotFoundError("This model dosn't exist")
             }
-        except TimeOutError:
+        except TimeoutError:
             return {
                 "success": False,
                 "data": None,
-                "error": TimeOutError("Given Time Exceded")
+                "error": TimeoutError("Given Time Exceded")
             }
         except NetworkError:
             return {
@@ -76,9 +76,9 @@ class LLMClient:
                 "data": None,
                 "error": NetworkError("Network Busy")
             }
-        except LLMError:
+        except Exception as e:
             return {
                 "success": False,
                 "data": None,
-                "error": LLMError
+                "error": e
             }
