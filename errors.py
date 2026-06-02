@@ -4,13 +4,13 @@ class LLMError(Exception):
             message: str,
             provider: str = None,
             model: str = None,
-            raw_response: str = None
+            cause_of_error: str = None
             ):
 
         super().__init__(message)
         self.provider = provider
         self.model = model
-        self.raw_response = raw_response
+        self.cause_of_error = cause_of_error
 
 
 class AuthenticationError(LLMError):
