@@ -21,6 +21,12 @@ class LLMClient:
 
         model = payload["model"]
 
+        metadata = {
+            "success": False,
+            "data": None,
+            "error": None
+            }
+
 
         try:
             response = self.Client.chat.completions.create(
@@ -32,65 +38,50 @@ class LLMClient:
 
             )
 
-            return {
-                "success": True,
-                "data": response,
-                "error": None
-            }
+            metadata["success"] = True
+            metadata["data"] = response
+
+            return metadata
+
+
 
         except openai.AuthenticationError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": AuthenticationError("Authentication failed", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = AuthenticationError("Authentication failed", model= model, provider=self.provider_name, cause_of_error= str(e))
+
 
         except openai.PermissionDeniedError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": PermissionDeniedError("Permission denied", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = PermissionDeniedError("Permission denied", model= model, provider=self.provider_name, cause_of_error= str(e))
+
 
         except openai.BadRequestError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": InvalidRequestError("Invalid request", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = InvalidRequestError("Invalid request", model= model, provider=self.provider_name, cause_of_error= str(e))
+
         except openai.RateLimitError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": RateLimitError("Rate limit exceeded", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = RateLimitError("Rate limit exceeded", model= model, provider=self.provider_name, cause_of_error= str(e))
+
         except openai.InternalServerError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": ProviderError("Provider error", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = ProviderError("Provider error", model= model, provider=self.provider_name, cause_of_error= str(e))
+
         except openai.NotFoundError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": ModelNotFoundError("Requested model was not found", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = ModelNotFoundError("Requested model was not found", model= model, provider=self.provider_name, cause_of_error= str(e))
+
         except openai.APITimeoutError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": TimeoutError("Request timed out", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = TimeoutError("Request timed out", model= model, provider=self.provider_name, cause_of_error= str(e))
+
         except openai.APIConnectionError as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": NetworkError("Network connection failed", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                   metadata["error"] = NetworkError("Network connection failed", model= model, provider=self.provider_name, cause_of_error= str(e))
+
         except Exception as e:
-            return {
-                "success": False,
-                "data": None,
-                "error": ProviderError("Something went wrong", model= model, provider=self.provider_name, cause_of_error= str(e))
-            }
+
+                  metadata["error"] = ProviderError("Something went wrong", model= model, provider=self.provider_name, cause_of_error= str(e))
+
+        return metadata
+
