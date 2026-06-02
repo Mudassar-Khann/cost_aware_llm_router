@@ -2,7 +2,7 @@ from config import Settings
 from openai import OpenAI
 import openai
 from errors import (RateLimitError, InvalidRequestError,
- NetworkError, TimeoutError, AuthenticationError, ModelNotFoundError, ProviderError)
+ NetworkError, TimeoutError, AuthenticationError, PermissionDeniedError, ModelNotFoundError, ProviderError)
 
 settings = Settings()
 
@@ -40,13 +40,20 @@ class LLMClient:
                 "error": AuthenticationError("Write APi key correctly", model= payload["model"])
             }
 
+        except openai.PermissionDeniedError:
+            return {
+                "success": False,
+                "data": None,
+                "error": PermissionDeniedError("You Do Not have the permission to acess this material", model= payload["model"])
+            }
+
         except openai.BadRequestError:
             return {
                 "success": False,
                 "data": None,
                 "error": InvalidRequestError("Invalid Request")
             }
-        except RateLimitError:
+        except openai.RateLimitError:
             return {
                 "success": False,
                 "data": None,
@@ -56,7 +63,7 @@ class LLMClient:
             return {
                 "success": False,
                 "data": None,
-                "error": ProviderError("Server Side error", provider= "https://openrouter.ai/api/v1")
+                "error": ProviderError("Server Side error", provider= "OpenRouter")
             }
         except openai.NotFoundError:
             return {
@@ -80,5 +87,5 @@ class LLMClient:
             return {
                 "success": False,
                 "data": None,
-                "error": e
+                "error": ProviderError("Something went wrong", raw_response= str(e))
             }
