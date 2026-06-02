@@ -37,3 +37,6 @@ class TimeoutError(LLMError):
 
 class NetworkError(LLMError):
     pass
+
+class PermissionDeniedError(LLMError):
+    pass
