@@ -38,59 +38,59 @@ class LLMClient:
                 "error": None
             }
 
-        except openai.AuthenticationError:
+        except openai.AuthenticationError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": AuthenticationError("Write APi key correctly", model= model, provider=self.provider_name)
+                "error": AuthenticationError("Authentication failed", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
 
-        except openai.PermissionDeniedError:
+        except openai.PermissionDeniedError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": PermissionDeniedError("You Do Not have the permission to acess this material", model= model, provider=self.provider_name)
+                "error": PermissionDeniedError("Permission denied", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
 
-        except openai.BadRequestError:
+        except openai.BadRequestError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": InvalidRequestError("Invalid Request", model= model, provider=self.provider_name)
+                "error": InvalidRequestError("Invalid request", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
-        except openai.RateLimitError:
+        except openai.RateLimitError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": RateLimitError("Token Limit Exceeded", model= model, provider=self.provider_name)
+                "error": RateLimitError("Rate limit exceeded", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
-        except openai.InternalServerError:
+        except openai.InternalServerError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": ProviderError("Server Side error", model= model, provider=self.provider_name)
+                "error": ProviderError("Provider error", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
-        except openai.NotFoundError:
+        except openai.NotFoundError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": ModelNotFoundError("This model dosn't exist", model= model, provider=self.provider_name)
+                "error": ModelNotFoundError("Requested model was not found", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
-        except openai.APITimeoutError:
+        except openai.APITimeoutError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": TimeoutError("Given Time Exceded", model= model, provider=self.provider_name)
+                "error": TimeoutError("Request timed out", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
-        except openai.APIConnectionError:
+        except openai.APIConnectionError as e:
             return {
                 "success": False,
                 "data": None,
-                "error": NetworkError("Network Busy", model= model, provider=self.provider_name)
+                "error": NetworkError("Network connection failed", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
         except Exception as e:
             return {
                 "success": False,
                 "data": None,
-                "error": ProviderError("Something went wrong", model= model, provider=self.provider_name, raw_response= str(e))
+                "error": ProviderError("Something went wrong", model= model, provider=self.provider_name, cause_of_error= str(e))
             }
