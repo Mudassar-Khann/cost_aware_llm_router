@@ -1,10 +1,10 @@
 from config import Settings
 from openai import OpenAI
-from errors import (LLMError, RateLimitError, InvalidRequestError,
+import openai
+from errors import (RateLimitError, InvalidRequestError,
  NetworkError, TimeoutError, AuthenticationError, ModelNotFoundError, ProviderError)
 
 settings = Settings()
-
 
 class LLMClient:
     def __init__(self):
@@ -33,14 +33,14 @@ class LLMClient:
                 "error": None
             }
 
-        except AuthenticationError:
+        except openai.AuthenticationError:
             return {
                 "success": False,
                 "data": None,
-                "error": AuthenticationError("Write APi key correctly")
+                "error": AuthenticationError("Write APi key correctly", model= payload["model"])
             }
 
-        except InvalidRequestError:
+        except openai.BadRequestError:
             return {
                 "success": False,
                 "data": None,
@@ -52,25 +52,25 @@ class LLMClient:
                 "data": None,
                 "error": RateLimitError("Token Limit Exceeded")
             }
-        except ProviderError:
+        except openai.InternalServerError:
             return {
                 "success": False,
                 "data": None,
-                "error": ProviderError("Server Side error")
+                "error": ProviderError("Server Side error", provider= "https://openrouter.ai/api/v1")
             }
-        except ModelNotFoundError:
+        except openai.NotFoundError:
             return {
                 "success": False,
                 "data": None,
-                "error": ModelNotFoundError("This model dosn't exist")
+                "error": ModelNotFoundError("This model dosn't exist", model= payload["model"])
             }
-        except TimeoutError:
+        except openai.APITimeoutError:
             return {
                 "success": False,
                 "data": None,
                 "error": TimeoutError("Given Time Exceded")
             }
-        except NetworkError:
+        except openai.APIConnectionError:
             return {
                 "success": False,
                 "data": None,
