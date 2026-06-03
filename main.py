@@ -3,6 +3,9 @@ from request_builder import RequestBuilder
 from llm_client import LLMClient
 from cost_tracker import CostTracker
 from logger import get_logger
+from errors import (RateLimitError, InvalidRequestError,
+ NetworkError, TimeoutError, AuthenticationError, PermissionDeniedError, ModelNotFoundError, ProviderError)
+
 
 logger = get_logger()
 
@@ -31,12 +34,38 @@ def main():
             mode="text"
         )
 
-        result = client.send(payload)
+        for i in range(3):
+
+            result = client.send(payload)
+
+            if result["success"]:
+                break
+
+            error = result["error"]
+            if isinstance(error, (AuthenticationError, RateLimitError, InvalidRequestError, ModelNotFoundError, PermissionDeniedError)):
+                raise error
+
+            elif isinstance(error,(NetworkError, TimeoutError)):
+                print(f"{error.message} \nModel: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+                if i == 2:
+                    print("There is some issue with server retry after some time")
+
+                else:
+                  print("retrying..")
+
+
+            elif isinstance(error, ProviderError):
+                print(f"{error.message} \nModel: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+
+
+            elif isinstance(error, Exception):
+                raise error
+
+            logger.error(f"Message={error.message} Model: {error.model} Provider: {error.provider} Reason={error.cause_of_error} ")
 
         if not result["success"]:
-            print(f"[ERROR] {result['error']}")
-            logger.error(result["error"])
-            continue
+            break
+
 
         data = result["data"]
         usage = data.usage
