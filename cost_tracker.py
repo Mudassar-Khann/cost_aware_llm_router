@@ -12,8 +12,8 @@ class CostTracker:
         pricing = Config.MODELS[model]["pricing"]
 
         cost = (
-            (input_tokens / 1000) * pricing["input_per_million"] +
-            (output_tokens / 1000) * pricing["output_per_million"]
+            (input_tokens /  1_000_000) * pricing["input_per_million"] +
+            (output_tokens /  1_000_000) * pricing["output_per_million"]
         )
 
         self.total_cost += cost
