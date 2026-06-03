@@ -3,6 +3,7 @@ from request_builder import RequestBuilder
 from llm_client import LLMClient
 from cost_tracker import CostTracker
 from logger import get_logger
+from config import Config
 from errors import (RateLimitError, InvalidRequestError,
  NetworkError, TimeoutError, AuthenticationError, PermissionDeniedError, ModelNotFoundError, ProviderError)
 
@@ -34,19 +35,56 @@ def main():
             mode="text"
         )
 
-        for i in range(3):
+        for i in range(Config.MAX_RETRIES):
 
             result = client.send(payload)
 
             if result["success"]:
                 break
 
-            error = result["error"]
-            if isinstance(error, (AuthenticationError, RateLimitError, InvalidRequestError, ModelNotFoundError, PermissionDeniedError)):
-                raise error
 
-            elif isinstance(error,(NetworkError, TimeoutError)):
-                print(f"{error.message} \nModel: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+            error = result["error"]
+
+            logger.error(f"Message={error.message} Model: {error.model} Provider: {error.provider} Reason={error.cause_of_error} ")
+
+            if isinstance(error, (AuthenticationError, InvalidRequestError, ModelNotFoundError)):
+                print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+                break
+
+            elif isinstance(error, PermissionDeniedError):
+                 print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+                 print("Avalible Models")
+                 for model in Config.MODELS:
+                     if error.model == model:
+                         print(f"> {model}")
+                         continue
+                     print(model)
+                 chnage_model = input("Do you wanna change the model enter 'y' for yes and 'n' for no: ")
+                 if chnage_model == "n":
+                     break
+                 chnage_to = input("write model name or press enter to change automatically: ")
+
+                 if chnage_to:
+                    if chnage_to in Config.MODELS:
+                        if not Config.MODELS[chnage_to]["available"]:
+                            print("You have to buy the plan to access this model")
+                            break
+                        payload["model"] = chnage_to
+
+                    else:
+                        print("typed Model is not available")
+                        break
+                 else:
+                      if error.model == Config.DEFAULT_MODEL:
+                           payload["model"] = Config.EFFCIENT_MODEL
+
+                      else:
+                           payload["model"] = Config.DEFAULT_MODEL
+
+
+
+            elif isinstance(error,(NetworkError, TimeoutError, RateLimitError)):
+                print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
                 if i == 2:
                     print("There is some issue with server retry after some time")
 
@@ -56,15 +94,17 @@ def main():
 
             elif isinstance(error, ProviderError):
                 print(f"{error.message} \nModel: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+                break
 
 
             elif isinstance(error, Exception):
-                raise error
+                 print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+                 break
 
-            logger.error(f"Message={error.message} Model: {error.model} Provider: {error.provider} Reason={error.cause_of_error} ")
+
 
         if not result["success"]:
-            break
+            continue
 
 
         data = result["data"]
@@ -72,11 +112,6 @@ def main():
 
 
         content = data.choices[0].message.content
-
-
-
-
-
 
 
 
