@@ -18,36 +18,36 @@ class Config:
     EFFCIENT_MODEL = "gpt_oss_120b"
 
 
-MODELS = {
-    "gpt_oss_20b": {
-        "name": "GPT OSS 20B",
+    MODELS = {
+        "gpt_oss_20b": {
+            "name": "GPT OSS 20B",
 
-        "api_name": "openai/gpt-oss-20b:free",
+            "api_name": "openai/gpt-oss-20b:free",
 
-        "provider": "openrouter",
-        "developer": "openai",
+            "provider": "openrouter",
+            "developer": "openai",
 
-        "available": True,
+            "available": True,
 
-        "pricing": {
-            "input_per_million": 3,
-            "output_per_million": 15
-        }
-    },
+            "pricing": {
+                "input_per_million": 3,
+                "output_per_million": 15
+            }
+        },
 
-    "gpt_oss_120b": {
-        "name": "GPT OSS 120B",
+        "gpt_oss_120b": {
+            "name": "GPT OSS 120B",
 
-        "api_name": "openai/gpt-oss-120b:free",
+            "api_name": "openai/gpt-oss-120b:free",
 
-        "provider": "openrouter",
-        "developer": "openai",
+            "provider": "openrouter",
+            "developer": "openai",
 
-        "available": True,
+            "available": True,
 
-        "pricing": {
-            "input_per_million": 5,
-            "output_per_million": 25
+            "pricing": {
+                "input_per_million": 5,
+                "output_per_million": 25
+            }
         }
     }
-}
