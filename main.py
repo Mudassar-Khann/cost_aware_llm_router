@@ -53,7 +53,7 @@ def main():
 
             elif isinstance(error, PermissionDeniedError):
                  print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
-                 print("Avalible Models")
+                 print("Available Models")
                  for model in Config.MODELS:
                      if error.model == model:
                          print(f"> {model}")
@@ -85,7 +85,7 @@ def main():
 
             elif isinstance(error,(NetworkError, TimeoutError, RateLimitError)):
                 print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
-                if i == 2:
+                if i == Config.MAX_RETRIES - 1:
                     print("There is some issue with server retry after some time")
 
                 else:
@@ -93,7 +93,7 @@ def main():
 
 
             elif isinstance(error, ProviderError):
-                print(f"{error.message} \nModel: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
+                print(f"Model: {error.model} \nProvider: {error.provider} \nReason={error.cause_of_error} ")
                 break
 
 
@@ -117,19 +117,19 @@ def main():
 
 
         cost_info = tracker.update(
-            model=route["model"],
+            model=payload["model"],
             usage= usage
         )
 
         logger.info(
-            f"model={route['model']} "
+            f"model={payload["model"]} "
             f"reason={route['reason']} "
             f"tokens={usage} "
             f"cost={cost_info['cost']:.6f}"
         )
 
 
-        print(f"\n[MODEL] {route['model']}")
+        print(f"\n[MODEL] {payload['model']}")
         print(f"{content}")
         print(f"[REASON] {route['reason']}")
         print(f"[TOKENS] {usage}")

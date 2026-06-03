@@ -8,6 +8,7 @@ class LLMError(Exception):
             ):
 
         super().__init__(message)
+        self.message = message
         self.provider = provider
         self.model = model
         self.cause_of_error = cause_of_error
