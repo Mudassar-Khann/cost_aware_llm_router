@@ -2,8 +2,7 @@ from config import Config
 
 class RequestBuilder:
     def build(self, user_input, model, mode="text"):
-       
-
+        
         system_prompt = Config.SYSTEM_PROMPT
 
         if mode == "json":

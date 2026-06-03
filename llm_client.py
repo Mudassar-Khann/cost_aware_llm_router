@@ -1,5 +1,6 @@
 from config import Settings
 from openai import OpenAI
+from config import Config
 import openai
 from errors import (RateLimitError, InvalidRequestError,
  NetworkError, TimeoutError, AuthenticationError, PermissionDeniedError, ModelNotFoundError, ProviderError)
@@ -20,6 +21,7 @@ class LLMClient:
     def send(self, payload):
 
         model = payload["model"]
+        api_model = Config.MODELS[model]["api_name"]
 
         metadata = {
             "success": False,
@@ -30,7 +32,7 @@ class LLMClient:
 
         try:
             response = self.Client.chat.completions.create(
-                model= model,
+                model= api_model,
                 messages= payload["messages"],
                 temperature= payload["temperature"],
 
