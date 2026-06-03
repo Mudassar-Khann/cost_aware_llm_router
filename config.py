@@ -13,29 +13,41 @@ class Config:
 
     MAX_RETRIES = 3
 
+    DEFAULT_MODEL = "gpt_oss_20b"
 
-    AVAILABLE_MODELS = {
+    EFFCIENT_MODEL = "gpt_oss_120b"
+
+
+MODELS = {
     "gpt_oss_20b": {
+        "name": "GPT OSS 20B",
+
         "api_name": "openai/gpt-oss-20b:free",
-        "display_name": "GPT OSS 20B",
-        "provider": "OpenRouter",
-        "company": "OpenAI",
+
+        "provider": "openrouter",
+        "developer": "openai",
+
         "available": True,
+
         "pricing": {
-            "input": 3,
-            "output": 15
+            "input_per_million": 3,
+            "output_per_million": 15
         }
     },
 
     "gpt_oss_120b": {
+        "name": "GPT OSS 120B",
+
         "api_name": "openai/gpt-oss-120b:free",
-        "display_name": "GPT OSS 120B",
-        "provider": "OpenRouter",
-        "company": "OpenAI",
+
+        "provider": "openrouter",
+        "developer": "openai",
+
         "available": True,
+
         "pricing": {
-            "input": 5,
-            "output": 25
+            "input_per_million": 5,
+            "output_per_million": 25
         }
     }
 }
