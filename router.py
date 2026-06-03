@@ -12,13 +12,13 @@ class Router:
 
         if contains_keywords(words, self.complex_keywords):
             return {
-                "model": Config.EFFCIENT_MODEL,
+                "model": Config.ADVANCED_MODEL,
                 "reason": "keyword_complex"
             }
 
         if len(words) > 20:
             return {
-                "model": Config.EFFCIENT_MODEL,
+                "model": Config.ADVANCED_MODEL,
                 "reason": "long_query"
             }
 

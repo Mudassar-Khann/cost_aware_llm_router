@@ -15,7 +15,7 @@ class Config:
 
     DEFAULT_MODEL = "gpt_oss_20b"
 
-    EFFCIENT_MODEL = "gpt_oss_120b"
+    ADVANCED_MODEL = "gpt_oss_120b"
 
 
     MODELS = {

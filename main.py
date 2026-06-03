@@ -76,7 +76,7 @@ def main():
                         break
                  else:
                       if error.model == Config.DEFAULT_MODEL:
-                           payload["model"] = Config.EFFCIENT_MODEL
+                           payload["model"] = Config.ADVANCED_MODEL
 
                       else:
                            payload["model"] = Config.DEFAULT_MODEL
