@@ -9,11 +9,11 @@ class CostTracker:
         input_tokens = usage.prompt_tokens
         output_tokens = usage.completion_tokens
 
-        pricing = Config.PRICING[model]
+        pricing = Config.MODELS[model]["pricing"]
 
         cost = (
-            (input_tokens / 1000) * pricing["input"] +
-            (output_tokens / 1000) * pricing["output"]
+            (input_tokens / 1000) * pricing["input_per_million"] +
+            (output_tokens / 1000) * pricing["output_per_million"]
         )
 
         self.total_cost += cost
